@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import '../styles.css';
 import MovieCard from "./MovieCard";
 
-export const MoviesGrid = () => {
-  const [movies, setMovies] = useState([]);
-
+export const MoviesGrid = ({ movies, watchlist, toggleWatchlist }) => {
   const [foundMovies, setFoundMovies] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,16 +10,6 @@ export const MoviesGrid = () => {
   const [genre, setGenre] = useState('All Genres');
 
   const [rating, setRating] = useState('All');
-
-  useEffect(() => {
-    fetch('movies.json')
-      .then(response => response.json())
-      .then(data => {
-        setMovies(data);
-
-        setFoundMovies(data);
-      })
-  }, []);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -60,7 +48,7 @@ export const MoviesGrid = () => {
         movie => checkMovieBySearchTerm(movie) && checkMovieByGenre(movie) && checkMovieByRating(movie));
 
       setFoundMovies(foundMovieItems);
-    }, 500)
+    }, 500);
   }, [searchTerm, genre, rating, movies]);
 
   return (
@@ -110,8 +98,10 @@ export const MoviesGrid = () => {
         {
           foundMovies.map(movie => (
             <MovieCard
+              isWatchlisted={watchlist.includes(movie.id)}
               key={movie.id}
               movie={movie}
+              toggleWatchlist={toggleWatchlist}
             />
           ))
         }
